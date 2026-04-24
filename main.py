@@ -33,6 +33,7 @@ from modules.encryption_audit import audit_encryption
 from modules.ssid_checker import check_ssid, check_broadcast
 from modules.wps_detector import detect_wps
 from modules.mac_auditor import audit_mac_addresses, load_whitelist, save_whitelist, get_connected_devices
+from modules.hidden_network_detector import detect_hidden_networks
 from modules.scorer import score_all_networks
 from modules.report_gen import generate_report, open_report
 
@@ -59,7 +60,7 @@ def show_banner():
     )
 
 
-def run_scan() -> tuple[list[dict], dict]:
+def run_scan() -> tuple:
     """Run all scanning and analysis modules."""
     console.print()
     console.print(Rule("[bold cyan]Running Security Audit[/bold cyan]"))
@@ -70,6 +71,7 @@ def run_scan() -> tuple[list[dict], dict]:
         ("Checking encryption protocols (WEP/TKIP/WPA2)...", "Encryption"),
         ("Checking SSID broadcast & default SSIDs...", "SSID Check"),
         ("Detecting WPS vulnerability...", "WPS Detect"),
+        ("Detecting hidden/cloaked networks...", "Hidden Nets"),
         ("Scanning network devices (ARP table)...", "MAC Audit"),
         ("Calculating security scores...", "Scoring"),
     ]
@@ -109,24 +111,30 @@ def run_scan() -> tuple[list[dict], dict]:
         time.sleep(0.3)
         progress.advance(task)
 
-        # Step 5: MAC audit
+        # Step 5: Hidden networks
         progress.update(task, description=steps[4][0], status="")
+        hidden_audit = detect_hidden_networks()
+        time.sleep(0.5)
+        progress.advance(task)
+
+        # Step 6: MAC audit
+        progress.update(task, description=steps[5][0], status="")
         mac_audit = audit_mac_addresses()
         time.sleep(0.3)
         progress.advance(task)
 
-        # Step 6: Score
-        progress.update(task, description=steps[5][0], status="")
+        # Step 7: Score
+        progress.update(task, description=steps[6][0], status="")
         networks = score_all_networks(networks)
         time.sleep(0.3)
         progress.advance(task)
 
-    console.print(f"  [bold green]✓[/bold green] Scan complete — [bold]{len(networks)}[/bold] networks analyzed")
+    console.print(f"  [bold green]✓[/bold green] Scan complete — [bold]{len(networks)}[/bold] networks | [cyan]{hidden_audit['total_detected']}[/cyan] hidden detected")
     console.print()
-    return networks, mac_audit
+    return networks, mac_audit, hidden_audit
 
 
-def display_results(networks: list[dict], mac_audit: dict):
+def display_results(networks: list, mac_audit: dict, hidden_audit: dict):
     """Display results in rich terminal tables."""
 
     # ── AP Table ──────────────────────────────────
@@ -199,7 +207,36 @@ def display_results(networks: list[dict], mac_audit: dict):
 
         console.print(table)
 
-    # ── MAC Audit ─────────────────────────────────
+    # ── Hidden Networks Section ───────────────────────────
+    console.print()
+    console.print(Rule("[bold cyan]🔭 Hidden Network Detection (Cloaked SSID)[/bold cyan]"))
+    console.print()
+    console.print(f"  [dim]{hidden_audit.get('lecture_note', '')}[/dim]")
+    console.print()
+
+    hidden_list = hidden_audit.get('hidden', [])
+    if hidden_list:
+        h_table = Table(box=box.SIMPLE_HEAVY, header_style="bold cyan", padding=(0, 1))
+        h_table.add_column("BSSID", style="cyan")
+        h_table.add_column("Channel")
+        h_table.add_column("Signal")
+        h_table.add_column("Auth")
+        h_table.add_column("Detection Method", style="dim")
+        for h in hidden_list:
+            h_table.add_row(
+                h.get('bssid', 'N/A'),
+                str(h.get('channel', '?')),
+                str(h.get('signal', '?')) + '%',
+                h.get('auth', 'Unknown'),
+                h.get('detection_method', 'passive scan')
+            )
+        console.print(h_table)
+        console.print(f"  [yellow]⚠[/yellow] [dim]{hidden_audit.get('attacker_note', '')}[/dim]")
+    else:
+        console.print("  [dim]No hidden networks detected in passive scan.[/dim]")
+        console.print("  [dim]Note: Active probing (Kismet-style) may detect additional cloaked APs.[/dim]")
+
+    # ── MAC Audit ─────────────────────────────────────────
     console.print()
     console.print(Rule("[bold]🔐 Network Device Audit (MAC Whitelist)[/bold]"))
     console.print()
@@ -289,12 +326,12 @@ def main_menu():
         choice = Prompt.ask("  [bold cyan]Select option[/bold cyan]", choices=["1", "2", "3", "4"], default="1")
 
         if choice == "1":
-            networks, mac_audit = run_scan()
-            display_results(networks, mac_audit)
+            networks, mac_audit, hidden_audit = run_scan()
+            display_results(networks, mac_audit, hidden_audit)
 
             console.print()
             if Confirm.ask("  Generate HTML report?", default=True):
-                report_path = generate_report(networks, mac_audit)
+                report_path = generate_report(networks, mac_audit, hidden_audit)
                 console.print(f"\n  [bold green]✅ Report saved:[/bold green] {report_path}")
                 open_report(report_path)
 
@@ -303,8 +340,8 @@ def main_menu():
 
         elif choice == "3":
             console.print("  [yellow]Running quick scan to generate report...[/yellow]")
-            networks, mac_audit = run_scan()
-            report_path = generate_report(networks, mac_audit)
+            networks, mac_audit, hidden_audit = run_scan()
+            report_path = generate_report(networks, mac_audit, hidden_audit)
             console.print(f"\n  [bold green]✅ Report saved:[/bold green] {report_path}")
             open_report(report_path)
 

@@ -1,6 +1,7 @@
 """
 report_gen.py - HTML Security Report Generator
 Renders the Jinja2 template with all scan results.
+Includes hidden network data from hidden_network_detector module.
 """
 
 import os
@@ -9,7 +10,7 @@ from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 
 
-def generate_report(networks: list[dict], mac_audit: dict, output_dir: str = None) -> str:
+def generate_report(networks: list, mac_audit: dict, hidden_audit: dict = None, output_dir: str = None) -> str:
     """
     Generate HTML security report.
     Returns path to the generated HTML file.
@@ -39,9 +40,13 @@ def generate_report(networks: list[dict], mac_audit: dict, output_dir: str = Non
         else:
             counts['safe'] += 1
 
+    if hidden_audit is None:
+        hidden_audit = {'hidden': [], 'total_detected': 0, 'lecture_note': '', 'attacker_note': ''}
+
     html_content = template.render(
         networks=networks,
         mac_audit=mac_audit,
+        hidden_audit=hidden_audit,
         scan_time=scan_time,
         total_aps=len(networks),
         counts=counts
