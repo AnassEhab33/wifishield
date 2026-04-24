@@ -1,0 +1,25 @@
+# Generated reports (contain local network scan data)
+reports/
+
+# MAC whitelist (contains personal network info)
+data/mac_whitelist.json
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Rendered page images (temp files from PDF reading)
+*.png
+pdf7_part1.txt
+pdf8_content.txt
+
+# VS Code
+.vscode/
+
+# Environment
+.env
+venv/
+env/
