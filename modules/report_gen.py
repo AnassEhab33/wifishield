@@ -1,7 +1,6 @@
 """
 report_gen.py - HTML Security Report Generator
 Renders the Jinja2 template with all scan results.
-Includes hidden network data from hidden_network_detector module.
 """
 
 import os
@@ -10,7 +9,9 @@ from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 
 
-def generate_report(networks: list, mac_audit: dict, hidden_audit: dict = None, output_dir: str = None) -> str:
+def generate_report(networks: list, mac_audit: dict,
+                    evil_twin_audit: dict = None,
+                    output_dir: str = None) -> str:
     """
     Generate HTML security report.
     Returns path to the generated HTML file.
@@ -27,7 +28,7 @@ def generate_report(networks: list, mac_audit: dict, hidden_audit: dict = None, 
     scan_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-    # Count by risk
+    # Count by risk level
     counts = {'critical': 0, 'high': 0, 'medium': 0, 'safe': 0}
     for ap in networks:
         score = ap.get('security_score', {}).get('score', 50)
@@ -40,13 +41,16 @@ def generate_report(networks: list, mac_audit: dict, hidden_audit: dict = None, 
         else:
             counts['safe'] += 1
 
-    if hidden_audit is None:
-        hidden_audit = {'hidden': [], 'total_detected': 0, 'lecture_note': '', 'attacker_note': ''}
+    if evil_twin_audit is None:
+        evil_twin_audit = {
+            'flagged': [], 'total': 0, 'critical_count': 0,
+            'note': ''
+        }
 
     html_content = template.render(
         networks=networks,
         mac_audit=mac_audit,
-        hidden_audit=hidden_audit,
+        evil_twin_audit=evil_twin_audit,
         scan_time=scan_time,
         total_aps=len(networks),
         counts=counts

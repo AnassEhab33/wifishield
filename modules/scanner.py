@@ -70,12 +70,14 @@ def scan_networks() -> list[dict]:
 
     networks = parse_netsh_output(raw)
 
-    # Enrich each network with flags
+    # Enrich each network with flags + vendor lookup
+    from modules.oui_lookup import lookup_vendor
     for ap in networks:
         ssid_lower = ap.get('ssid', '').lower()
         ap['is_default_ssid'] = ssid_lower in default_ssids
         ap['encryption_risk'] = classify_encryption(ap.get('security', ''), ap.get('encryption', ''))
         ap['signal_bars'] = signal_to_bars(ap.get('signal', 0))
+        ap['vendor'] = lookup_vendor(ap.get('bssid', ''))
 
     return networks
 
