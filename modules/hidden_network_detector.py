@@ -1,10 +1,15 @@
 """
 hidden_network_detector.py - Hidden Network (Cloaked SSID) Detector
-Based on Lecture 7 (Ch.11):
-  - "An AP can be configured to not broadcast its SSID until after authentication"
-  - "Wireless hackers can attempt to GUESS the SSID"
-  - Disabling SSID broadcast forces attackers to use active tools like Kismet
-    rather than passive scanners like NetStumbler
+
+On Windows, hidden APs do NOT appear in 'netsh wlan show networks' at all.
+They appear only in the BSS-level scan table inside 'netsh wlan show all',
+where the SSID field is empty (beacon suppressed).
+
+Approach:
+  1. Collect all visible SSIDs from 'netsh wlan show networks mode=bssid'
+  2. Parse ALL BSS entries from 'netsh wlan show all' (AP BSSID blocks)
+  3. Any BSS entry whose SSID field is empty/blank = hidden AP
+  4. Also check 'netsh wlan show profiles' for saved hidden-network profiles
 """
 
 import subprocess
@@ -12,148 +17,177 @@ import re
 
 
 def detect_hidden_networks() -> dict:
-    """
-    Detect hidden/cloaked networks via two methods:
-    1. Parse netsh for entries with empty/blank SSID (hidden SSIDs show as empty)
-    2. Check 'netsh wlan show all' for more detailed probe data
-    Returns dict with findings.
-    """
     hidden = []
-    visible = []
-    raw_text = ""
+    visible_bssids = set()
+    errors = []
 
     try:
-        # Method 1: Standard scan - hidden APs appear with empty SSID
-        result = subprocess.run(
-            ['netsh', 'wlan', 'show', 'networks', 'mode=bssid'],
-            capture_output=True, text=True, timeout=15
-        )
-        raw_text = result.stdout
-        _parse_for_hidden(raw_text, hidden, visible)
+        # ── Step 1: Collect all visible BSSIDs from standard scan ──────────
+        visible_bssids = _get_visible_bssids()
 
-        # Method 2: Extended scan with 'show all'
-        result2 = subprocess.run(
+        # ── Step 2: Parse BSS table from 'netsh wlan show all' ─────────────
+        result = subprocess.run(
             ['netsh', 'wlan', 'show', 'all'],
-            capture_output=True, text=True, timeout=15
+            capture_output=True, text=True, timeout=20
         )
-        _parse_show_all(result2.stdout, hidden)
+        bss_entries = _parse_bss_table(result.stdout)
+
+        # ── Step 3: Any BSS entry with empty/blank SSID = hidden ───────────
+        for entry in bss_entries:
+            ssid = entry.get('ssid', '').strip()
+            bssid = entry.get('bssid', '')
+            if not ssid:
+                hidden.append({
+                    'ssid': '<Hidden Network>',
+                    'bssid': bssid,
+                    'signal': entry.get('signal', 0),
+                    'auth': entry.get('auth', 'Unknown'),
+                    'channel': entry.get('channel', 0),
+                    'detection_method': 'BSS scan cache (empty SSID beacon)'
+                })
+
+        # ── Step 4: Saved hidden profiles ──────────────────────────────────
+        saved_hidden = _get_saved_hidden_profiles()
+        for sh in saved_hidden:
+            # Only add if not already in hidden list
+            if not any(h.get('bssid') == sh.get('bssid') for h in hidden):
+                hidden.append(sh)
 
     except Exception as e:
-        return {
-            'hidden': [],
-            'visible_count': 0,
-            'error': str(e),
-            'lecture_note': _lecture_note()
-        }
+        errors.append(str(e))
 
-    # Deduplicate hidden by BSSID
-    seen_bssids = set()
+    # Deduplicate by BSSID
+    seen = set()
     unique_hidden = []
     for h in hidden:
-        bssid = h.get('bssid', '')
-        if bssid and bssid not in seen_bssids:
-            seen_bssids.add(bssid)
+        b = h.get('bssid', '').lower()
+        if b and b not in seen:
+            seen.add(b)
             unique_hidden.append(h)
 
     return {
         'hidden': unique_hidden,
-        'visible_count': len(visible),
+        'visible_count': len(visible_bssids),
         'total_detected': len(unique_hidden),
         'risk': 'HIGH' if unique_hidden else 'NONE',
-        'lecture_note': _lecture_note(),
+        'errors': errors,
+        'note': (
+            "Hidden networks suppress their SSID beacon. "
+            "Detected by scanning for BSS entries with an empty SSID field. "
+            "A hidden SSID is NOT a security measure — the BSSID is still visible."
+        ),
         'attacker_note': (
-            "From Lecture 7: An attacker uses active tools like Kismet to detect hidden networks "
-            "by capturing probe-request/probe-response frames. "
-            "NetStumbler (passive scanner) will MISS hidden networks, "
-            "but Kismet (active) will detect them. "
-            "A hidden SSID is NOT a security measure — it only stops passive scanners."
+            "An attacker can detect hidden networks by capturing probe-request and "
+            "probe-response frames using active tools. "
+            "A hidden SSID only stops passive scanners, not active reconnaissance."
         ),
         'defense_note': (
-            "Disabling SSID broadcast is a secondary measure only (Lecture 7, Figure 11-8). "
+            "Hiding the SSID is a secondary measure. "
             "Always combine with WPA2-AES encryption and MAC filtering."
-        )
+        ),
+        # Keep these for backward compat with templates
+        'lecture_note': (
+            "Hidden networks suppress their SSID beacon. "
+            "Detected via BSS-level scan cache (empty SSID field in beacon frame)."
+        ),
     }
 
 
-def _parse_for_hidden(raw: str, hidden: list, visible: list):
+def _get_visible_bssids() -> set:
+    """Return set of all BSSIDs visible in standard netsh scan."""
+    bssids = set()
+    try:
+        result = subprocess.run(
+            ['netsh', 'wlan', 'show', 'networks', 'mode=bssid'],
+            capture_output=True, text=True, timeout=15
+        )
+        for match in re.finditer(r'BSSID\s+\d+\s*:\s*([0-9a-fA-F:]{17})', result.stdout):
+            bssids.add(match.group(1).lower())
+    except Exception:
+        pass
+    return bssids
+
+
+def _parse_bss_table(raw: str) -> list:
     """
-    Parse netsh output. Hidden networks appear as SSIDs with no name or '<hidden>'.
+    Parse the BSS/AP entries from 'netsh wlan show all'.
+    Each AP block starts with 'SSID' and contains 'AP BSSID'.
+    Returns list of dicts with bssid, ssid, signal, channel, auth.
     """
-    blocks = re.split(r'SSID\s+\d+\s*:', raw)
+    entries = []
 
-    for block in blocks[1:]:
-        # Get the SSID value (first line after the colon)
-        ssid_line = block.split('\n')[0].strip() if block.strip() else ''
+    # Split on the BSS SSID header pattern: "    SSID                   : ..."
+    # This pattern appears in the per-AP capability sections
+    blocks = re.split(r'\n(?=\s{4}SSID\s+:)', raw)
 
-        # Get BSSID
-        bssid_match = re.search(r'BSSID\s+\d+\s*:\s*([0-9a-fA-F:]+)', block)
-        bssid = bssid_match.group(1).strip() if bssid_match else 'N/A'
+    for block in blocks:
+        # Check for AP BSSID (this is the BSS table section)
+        bssid_match = re.search(r'AP BSSID\s*:\s*([0-9a-fA-F:]{17})', block)
+        if not bssid_match:
+            continue
 
-        # Get Signal
+        bssid = bssid_match.group(1).strip()
+
+        # Extract SSID (the value right after "SSID :")
+        ssid_match = re.search(r'SSID\s{2,}:\s*(.*?)(?:\r?\n|$)', block)
+        ssid = ssid_match.group(1).strip() if ssid_match else ''
+
+        # Signal
         signal_match = re.search(r'Signal\s*:\s*(\d+)%', block)
         signal = int(signal_match.group(1)) if signal_match else 0
 
-        # Get Auth
-        auth_match = re.search(r'Authentication\s*:\s*(.+)', block)
-        auth = auth_match.group(1).strip() if auth_match else 'Unknown'
-
-        # Get channel
+        # Channel
         chan_match = re.search(r'Channel\s*:\s*(\d+)', block)
         channel = int(chan_match.group(1)) if chan_match else 0
 
-        entry = {
-            'ssid': ssid_line or '<Hidden>',
+        # Auth
+        auth_match = re.search(r'Authentication\s*:\s*(.+)', block)
+        auth = auth_match.group(1).strip() if auth_match else 'Unknown'
+
+        entries.append({
             'bssid': bssid,
+            'ssid': ssid,
             'signal': signal,
-            'auth': auth,
             'channel': channel,
-            'detection_method': 'netsh passive scan'
-        }
+            'auth': auth,
+        })
 
-        # Hidden = empty SSID, or literally blank
-        if not ssid_line or ssid_line.lower() in ['', '<hidden>', 'hidden']:
-            entry['ssid'] = '<Hidden Network>'
-            hidden.append(entry)
-        else:
-            visible.append(entry)
+    return entries
 
 
-def _parse_show_all(raw: str, hidden: list):
+def _get_saved_hidden_profiles() -> list:
     """
-    Parse 'netsh wlan show all' output for additional hidden network indicators.
-    Looks for BSSIDs responding with empty SSID in probe responses.
+    Check saved WiFi profiles for networks marked as 'non-broadcast' (hidden).
+    Returns list of hidden saved profiles.
     """
-    # Hidden networks in 'show all' appear as entries with "SSID" showing blank
-    lines = raw.split('\n')
-    current_bssid = None
-    i = 0
-    while i < len(lines):
-        line = lines[i]
+    hidden_profiles = []
+    try:
+        # List all saved profiles
+        result = subprocess.run(
+            ['netsh', 'wlan', 'show', 'profiles'],
+            capture_output=True, text=True, timeout=10
+        )
+        # Extract profile names
+        profile_names = re.findall(r'All User Profile\s*:\s*(.+)', result.stdout)
 
-        bssid_match = re.search(r'BSSID\s*:\s*([0-9a-fA-F:]{17})', line, re.IGNORECASE)
-        if bssid_match:
-            current_bssid = bssid_match.group(1).strip()
-
-        # Check for hidden SSID indicators
-        ssid_match = re.search(r'^\s*SSID\s*:\s*$', line)  # Empty SSID line
-        if ssid_match and current_bssid:
-            # Check if this BSSID is already in hidden list
-            existing = [h for h in hidden if h.get('bssid') == current_bssid]
-            if not existing:
-                hidden.append({
-                    'ssid': '<Hidden Network>',
-                    'bssid': current_bssid,
+        for name in profile_names:
+            name = name.strip()
+            # Get profile details
+            detail = subprocess.run(
+                ['netsh', 'wlan', 'show', 'profile', f'name={name}'],
+                capture_output=True, text=True, timeout=10
+            )
+            # Check if profile is set as non-broadcast (hidden)
+            if re.search(r'Non[- ]broadcast\s*:\s*Yes', detail.stdout, re.IGNORECASE):
+                hidden_profiles.append({
+                    'ssid': name,
+                    'bssid': 'N/A (saved profile)',
                     'signal': 0,
-                    'auth': 'Unknown',
+                    'auth': 'Saved Profile',
                     'channel': 0,
-                    'detection_method': 'netsh show all (empty SSID in probe response)'
+                    'detection_method': f'Saved hidden profile: "{name}"'
                 })
-        i += 1
+    except Exception:
+        pass
 
-
-def _lecture_note() -> str:
-    return (
-        "Lecture 7 (Ch.11): 'An AP can be configured to NOT broadcast its SSID until after authentication.' "
-        "Hidden networks do not appear in NetStumbler (passive scanner) but ARE detected by Kismet (active). "
-        "Hiding SSID is a security-through-obscurity measure — NOT a replacement for encryption."
-    )
+    return hidden_profiles
