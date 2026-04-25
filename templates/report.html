@@ -3,297 +3,976 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WifiShield - Bento Audit Report</title>
+  <title>WifiShield — Security Audit Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Ubuntu:wght@300;400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+    /* ═══════════════════════════════════════
+       DESIGN TOKENS — Enterprise System
+       primary   = #072C2C
+       secondary = #FF5F03
+       success   = #16A34A
+       warning   = #D97706
+       danger    = #DC2626
+       surface   = #EDEADE
+       text      = #111827
+    ═══════════════════════════════════════ */
 
     :root {
-      --bg: #09090b;
-      --card-bg: #18181b;
-      --card-border: #27272a;
-      --text-main: #f4f4f5;
-      --text-mut: #a1a1aa;
-      --accent: #3b82f6;
-      --crit: #ef4444;
-      --high: #f97316;
-      --med: #eab308;
-      --safe: #22c55e;
-      --hidden: #06b6d4;
-      --radius: 24px;
-      --gap: 16px;
+      --clr-primary:   #072C2C;
+      --clr-secondary: #FF5F03;
+      --clr-success:   #16A34A;
+      --clr-warning:   #D97706;
+      --clr-danger:    #DC2626;
+      --clr-surface:   #EDEADE;
+      --clr-text:      #111827;
+
+      /* Derived */
+      --clr-primary-light:  #0e4b4b;
+      --clr-primary-xlight: #e6f0f0;
+      --clr-surface-2:      #E4E2D5;
+      --clr-border:         #D1CEBE;
+      --clr-muted:          #6B7280;
+      --clr-white:          #FFFFFF;
+
+      /* Spacing */
+      --sp-1: 4px;  --sp-2: 8px;   --sp-3: 12px;
+      --sp-4: 16px; --sp-5: 20px;  --sp-6: 24px;
+      --sp-8: 32px; --sp-10: 40px; --sp-12: 48px;
+
+      /* Typography */
+      --font-display: 'Oswald', sans-serif;
+      --font-body:    'Ubuntu', sans-serif;
+      --font-mono:    'Ubuntu Mono', monospace;
+
+      /* Radius */
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+
+      /* Elevation */
+      --shadow-sm: 0 1px 3px rgba(7,44,44,0.08), 0 1px 2px rgba(7,44,44,0.06);
+      --shadow-md: 0 4px 12px rgba(7,44,44,0.10), 0 2px 6px rgba(7,44,44,0.07);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ── RESET ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Outfit', sans-serif;
-      background-color: var(--bg);
-      color: var(--text-main);
-      padding: 32px;
+      font-family: var(--font-body);
+      background-color: var(--clr-surface);
+      color: var(--clr-text);
+      font-size: 14px;
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .bento-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      grid-auto-rows: min-content;
-      gap: var(--gap);
-    }
-
-    .bento-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      padding: 24px;
-      overflow: hidden;
+    /* ── TOP NAVIGATION BAR ─────────────────── */
+    .topbar {
+      background-color: var(--clr-primary);
+      color: var(--clr-white);
       display: flex;
-      flex-direction: column;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--sp-8);
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 3px solid var(--clr-secondary);
     }
 
-    .bento-card:hover {
-      border-color: #3f3f46;
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
     }
 
-    /* Grid Areas */
-    .header-card { grid-column: span 12; display: flex; justify-content: space-between; align-items: center; padding: 32px; }
-    
-    .stat-card { grid-column: span 2; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-    .stat-hidden-card { grid-column: span 4; display: flex; flex-direction: row; justify-content: space-between; align-items: center; }
-    
-    .networks-header { grid-column: span 12; background: transparent; border: none; padding: 24px 0 0 0; font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
-    
-    .ap-card { grid-column: span 4; }
-    @media (max-width: 1200px) { .ap-card { grid-column: span 6; } }
-    @media (max-width: 768px) { .ap-card { grid-column: span 12; } .stat-card { grid-column: span 6; } .stat-hidden-card { grid-column: span 12; } }
+    .topbar-logo {
+      width: 32px;
+      height: 32px;
+      background: var(--clr-secondary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--clr-white);
+      letter-spacing: -0.5px;
+    }
 
-    .bottom-section { grid-column: span 6; }
-    @media (max-width: 1024px) { .bottom-section { grid-column: span 12; } }
+    .topbar-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--clr-white);
+    }
 
-    .footer-card { grid-column: span 12; text-align: center; color: var(--text-mut); font-size: 0.85rem; padding: 16px; margin-top: 16px; }
+    .topbar-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-6);
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+    }
 
-    /* Typography & Elements */
-    .title { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 4px; }
-    .subtitle { color: var(--text-mut); font-weight: 500; }
-    
-    .badge { padding: 8px 16px; border-radius: 99px; font-weight: 600; font-size: 0.9rem; background: #27272a; border: 1px solid #3f3f46; }
-    
-    .stat-num { font-size: 3.5rem; font-weight: 800; line-height: 1; margin-bottom: 8px; }
-    .stat-lbl { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-mut); }
-    
-    .crit-txt { color: var(--crit); } .high-txt { color: var(--high); } .med-txt { color: var(--med); } .safe-txt { color: var(--safe); } .hid-txt { color: var(--hidden); }
+    .topbar-meta strong {
+      color: var(--clr-white);
+      font-weight: 500;
+    }
 
-    /* AP Card Specifics */
-    .ap-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-    .ap-ssid { font-size: 1.4rem; font-weight: 700; word-break: break-all; line-height: 1.2; }
-    .ap-bssid { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-mut); margin-top: 4px; }
-    
-    .ap-score-ring { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; border: 3px solid; flex-shrink: 0; }
-    .ring-crit { color: var(--crit); border-color: var(--crit); background: rgba(239,68,68,0.1); }
-    .ring-high { color: var(--high); border-color: var(--high); background: rgba(249,115,22,0.1); }
-    .ring-med { color: var(--med); border-color: var(--med); background: rgba(234,179,8,0.1); }
-    .ring-safe { color: var(--safe); border-color: var(--safe); background: rgba(34,197,94,0.1); }
+    .topbar-pill {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--clr-white);
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
 
-    .ap-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-    .tag { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: #27272a; color: #d4d4d8; }
-    .tag-sec { font-family: 'JetBrains Mono', monospace; border: 1px solid #3f3f46; }
-    .tag-warn { background: rgba(249,115,22,0.15); color: var(--high); border: 1px solid rgba(249,115,22,0.3); }
-    .tag-err { background: rgba(239,68,68,0.15); color: var(--crit); border: 1px solid rgba(239,68,68,0.3); }
+    /* ── LAYOUT ─────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 56px);
+    }
 
-    .ap-findings { margin-top: auto; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--card-border); padding-top: 16px;}
-    .finding { font-size: 0.85rem; display: flex; align-items: flex-start; gap: 8px; }
-    .finding::before { content: '•'; font-weight: bold; }
-    .val-crit::before { color: var(--crit); } .val-high::before { color: var(--high); } .val-med::before { color: var(--med); }
-    
-    .ap-rec { margin-top: 12px; font-size: 0.8rem; color: #93c5fd; background: rgba(59,130,246,0.1); padding: 12px; border-radius: 12px; border: 1px solid rgba(59,130,246,0.2); }
-    
-    /* Tables */
-    .bento-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .bento-table th { text-align: left; padding: 12px; color: var(--text-mut); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; border-bottom: 2px solid var(--card-border); }
-    .bento-table td { padding: 12px; border-bottom: 1px solid var(--card-border); font-family: 'JetBrains Mono', monospace; }
-    .bento-table tr:last-child td { border-bottom: none; }
-    
-    .empty-state { text-align: center; padding: 40px; color: var(--text-mut); font-style: italic; }
+    /* ── SIDEBAR ────────────────────────────── */
+    .sidebar {
+      background-color: var(--clr-primary);
+      color: var(--clr-white);
+      padding: var(--sp-6) 0;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
 
-    .hd-icon { font-size: 2rem; }
-    .hd-text { flex: 1; margin-left: 16px; }
+    .sidebar-section-label {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      padding: var(--sp-4) var(--sp-6) var(--sp-2);
+    }
 
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: 10px var(--sp-6);
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .sidebar-nav a:hover, .sidebar-nav a:focus-visible {
+      background: rgba(255,255,255,0.07);
+      color: var(--clr-white);
+      border-left-color: var(--clr-secondary);
+      outline: none;
+    }
+
+    .sidebar-stat-block {
+      margin: var(--sp-6) var(--sp-5);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      padding: var(--sp-4) var(--sp-5);
+    }
+
+    .sidebar-stat-block .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-3);
+    }
+
+    .s-stat { }
+    .s-stat-num {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .s-stat-lbl {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-top: 2px;
+    }
+    .num-danger  { color: #f87171; }
+    .num-warning { color: #fbbf24; }
+    .num-success { color: #4ade80; }
+    .num-cyan    { color: #22d3ee; }
+
+    /* ── MAIN CONTENT ───────────────────────── */
+    .main-content {
+      padding: var(--sp-8);
+      max-width: 1100px;
+    }
+
+    /* ── PAGE HEADER ────────────────────────── */
+    .page-header {
+      margin-bottom: var(--sp-8);
+      padding-bottom: var(--sp-6);
+      border-bottom: 2px solid var(--clr-border);
+    }
+
+    .page-header-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--clr-secondary);
+      margin-bottom: var(--sp-2);
+    }
+
+    .page-header-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--clr-primary);
+      letter-spacing: 0.5px;
+    }
+
+    .page-header-sub {
+      margin-top: var(--sp-2);
+      font-size: 14px;
+      color: var(--clr-muted);
+    }
+
+    /* ── SECTION ────────────────────────────── */
+    .section {
+      margin-bottom: var(--sp-12);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--sp-5);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--clr-primary);
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+    }
+
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 20px;
+      background-color: var(--clr-secondary);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .section-count-badge {
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--clr-primary);
+      color: var(--clr-white);
+      padding: 2px 10px;
+      border-radius: 99px;
+    }
+
+    /* ── CARD ───────────────────────────────── */
+    .card {
+      background: var(--clr-white);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    /* ── SUMMARY KPI ROW ────────────────────── */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--sp-4);
+      margin-bottom: var(--sp-8);
+    }
+
+    .kpi-card {
+      background: var(--clr-white);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: var(--sp-5) var(--sp-6);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    .kpi-card.kc-danger::after { background: var(--clr-danger); }
+    .kpi-card.kc-warning::after { background: var(--clr-warning); }
+    .kpi-card.kc-success::after { background: var(--clr-success); }
+    .kpi-card.kc-primary::after { background: var(--clr-primary); }
+    .kpi-card.kc-cyan::after { background: #0891b2; }
+
+    .kpi-num {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: var(--sp-1);
+    }
+
+    .kpi-card.kc-danger .kpi-num  { color: var(--clr-danger); }
+    .kpi-card.kc-warning .kpi-num { color: var(--clr-warning); }
+    .kpi-card.kc-success .kpi-num { color: var(--clr-success); }
+    .kpi-card.kc-primary .kpi-num { color: var(--clr-primary); }
+    .kpi-card.kc-cyan .kpi-num    { color: #0891b2; }
+
+    .kpi-lbl {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--clr-muted);
+    }
+
+    /* ── AP TABLE ───────────────────────────── */
+    .ent-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .ent-table thead tr {
+      background: var(--clr-surface);
+      border-bottom: 2px solid var(--clr-border);
+    }
+
+    .ent-table th {
+      text-align: left;
+      padding: var(--sp-3) var(--sp-5);
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--clr-muted);
+      white-space: nowrap;
+    }
+
+    .ent-table td {
+      padding: var(--sp-4) var(--sp-5);
+      border-bottom: 1px solid var(--clr-border);
+      vertical-align: middle;
+    }
+
+    .ent-table tbody tr:last-child td { border-bottom: none; }
+
+    .ent-table tbody tr:hover { background: #fafaf8; }
+
+    .cell-ssid {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--clr-primary);
+    }
+
+    .cell-ssid.hidden-ssid { color: #0891b2; font-style: italic; }
+
+    .cell-bssid {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--clr-muted);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .cell-mono {
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    /* ── BADGE / CHIP ───────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .badge-danger  { background: #FEF2F2; color: var(--clr-danger); border-color: #FECACA; }
+    .badge-warning { background: #FFFBEB; color: var(--clr-warning); border-color: #FDE68A; }
+    .badge-success { background: #F0FDF4; color: var(--clr-success); border-color: #BBF7D0; }
+    .badge-neutral { background: var(--clr-surface); color: var(--clr-muted); border-color: var(--clr-border); }
+    .badge-cyan    { background: #ECFEFF; color: #0891b2; border-color: #A5F3FC; }
+    .badge-primary { background: var(--clr-primary-xlight); color: var(--clr-primary); border-color: #b2d0d0; }
+
+    /* ── SCORE BAR ──────────────────────────── */
+    .score-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      min-width: 120px;
+    }
+
+    .score-num {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    .score-track {
+      flex: 1;
+      height: 6px;
+      background: var(--clr-surface);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.5s ease;
+    }
+
+    /* ── SIGNAL INDICATOR ───────────────────── */
+    .signal-dots {
+      display: flex;
+      gap: 3px;
+      align-items: flex-end;
+    }
+
+    .signal-dots span {
+      width: 5px;
+      background: var(--clr-border);
+      border-radius: 2px;
+    }
+
+    .signal-dots span:nth-child(1) { height: 6px; }
+    .signal-dots span:nth-child(2) { height: 10px; }
+    .signal-dots span:nth-child(3) { height: 14px; }
+    .signal-dots span:nth-child(4) { height: 18px; }
+
+    .signal-dots.sig-4 span:nth-child(1),
+    .signal-dots.sig-4 span:nth-child(2),
+    .signal-dots.sig-4 span:nth-child(3),
+    .signal-dots.sig-4 span:nth-child(4) { background: var(--clr-success); }
+
+    .signal-dots.sig-3 span:nth-child(1),
+    .signal-dots.sig-3 span:nth-child(2),
+    .signal-dots.sig-3 span:nth-child(3) { background: var(--clr-success); }
+
+    .signal-dots.sig-2 span:nth-child(1),
+    .signal-dots.sig-2 span:nth-child(2) { background: var(--clr-warning); }
+
+    .signal-dots.sig-1 span:nth-child(1) { background: var(--clr-danger); }
+
+    /* ── FINDINGS DRAWER ────────────────────── */
+    .finding-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sp-3);
+      padding: var(--sp-3) var(--sp-5);
+      font-size: 12px;
+      border-left: 3px solid;
+      margin: var(--sp-2) var(--sp-5);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .finding-row.f-danger  { border-color: var(--clr-danger);  background: #FEF2F2; color: #7F1D1D; }
+    .finding-row.f-warning { border-color: var(--clr-warning); background: #FFFBEB; color: #78350F; }
+    .finding-row.f-medium  { border-color: var(--clr-warning); background: #FFFBEB; color: #78350F; }
+    .finding-row.f-info    { border-color: var(--clr-primary); background: var(--clr-primary-xlight); color: var(--clr-primary); }
+
+    .finding-pts {
+      margin-left: auto;
+      flex-shrink: 0;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .rec-block {
+      margin: var(--sp-2) var(--sp-5) var(--sp-4);
+      padding: var(--sp-3) var(--sp-4);
+      background: var(--clr-primary-xlight);
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      color: var(--clr-primary);
+      line-height: 1.6;
+      border: 1px solid #b2d0d0;
+    }
+
+    .rec-block strong { display: block; margin-bottom: 2px; font-family: var(--font-display); font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+    .ref-note { font-style: italic; opacity: 0.65; font-size: 11px; margin-top: 4px; display: block; }
+
+    /* ── HIDDEN NETWORKS CARD ───────────────── */
+    .info-card {
+      background: var(--clr-white);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: var(--sp-6);
+    }
+
+    .info-card.ic-cyan {
+      border-color: #A5F3FC;
+      background: linear-gradient(135deg, #ECFEFF 0%, var(--clr-white) 60%);
+    }
+
+    .ic-header {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      margin-bottom: var(--sp-4);
+    }
+
+    .ic-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .ic-icon-cyan { background: #ECFEFF; }
+    .ic-icon-primary { background: var(--clr-primary-xlight); }
+
+    .ic-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--clr-primary);
+    }
+
+    .ic-body { font-size: 12.5px; color: var(--clr-muted); line-height: 1.65; }
+    .ic-body p { margin-bottom: var(--sp-3); }
+
+    /* ── BOTTOM GRID ────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-6);
+    }
+
+    /* ── EMPTY STATE ────────────────────────── */
+    .empty-state {
+      padding: var(--sp-10);
+      text-align: center;
+      color: var(--clr-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 2.5rem;
+      margin-bottom: var(--sp-4);
+    }
+
+    .empty-state-label {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--clr-primary);
+    }
+
+    /* ── FOOTER ─────────────────────────────── */
+    .footer {
+      background: var(--clr-primary);
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: var(--sp-5) var(--sp-8);
+      font-size: 12px;
+      margin-top: var(--sp-12);
+    }
+
+    .footer strong { color: var(--clr-white); }
+
+    /* ── LECTURE NOTE ───────────────────────── */
+    .lecture-note {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-left: 3px solid var(--clr-primary);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: var(--sp-3) var(--sp-4);
+      font-size: 12px;
+      color: var(--clr-muted);
+      line-height: 1.6;
+      margin-bottom: var(--sp-5);
+    }
+
+    .lecture-note strong {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--clr-primary);
+      margin-bottom: 2px;
+      font-family: var(--font-display);
+    }
+
+    /* ── PRINT ──────────────────────────────── */
+    @media print {
+      .topbar, .sidebar { display: none; }
+      .layout { display: block; }
+      .main-content { padding: 0; max-width: 100%; }
+    }
+
+    /* ── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 1024px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .kpi-row { grid-template-columns: repeat(3,1fr); }
+      .two-col { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
-<div class="bento-container">
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">W</div>
+    <span class="topbar-title">WifiShield</span>
+  </div>
+  <div class="topbar-meta">
+    <span>Scan: <strong>{{ scan_time }}</strong></span>
+    <span>{{ total_aps }} Networks</span>
+    <span>Hidden: <strong>{{ hidden_audit.total_detected }}</strong></span>
+    <span class="topbar-pill">AUDIT REPORT</span>
+  </div>
+</header>
 
-  <!-- Header -->
-  <div class="bento-card header-card">
-    <div>
-      <div class="title">WifiShield</div>
-      <div class="subtitle">WiFi Security Audit Report · Based on Lecture 7 & 8</div>
-    </div>
-    <div style="text-align: right;">
-      <div class="badge" style="margin-bottom: 8px;">Generated: {{ scan_time }}</div>
-      <div class="subtitle">{{ total_aps }} networks scanned</div>
-    </div>
-  </div>
+<div class="layout">
 
-  <!-- Stats -->
-  <div class="bento-card stat-card" style="box-shadow: 0 4px 20px rgba(239, 68, 68, 0.05);">
-    <div class="stat-num crit-txt">{{ counts.critical }}</div>
-    <div class="stat-lbl">Critical Risk</div>
-  </div>
-  <div class="bento-card stat-card">
-    <div class="stat-num high-txt">{{ counts.high }}</div>
-    <div class="stat-lbl">High Risk</div>
-  </div>
-  <div class="bento-card stat-card">
-    <div class="stat-num med-txt">{{ counts.medium }}</div>
-    <div class="stat-lbl">Moderate</div>
-  </div>
-  <div class="bento-card stat-card">
-    <div class="stat-num safe-txt">{{ counts.safe }}</div>
-    <div class="stat-lbl">Secure</div>
-  </div>
-  
-  <div class="bento-card stat-hidden-card">
-    <div class="hd-icon hid-txt">🔭</div>
-    <div class="hd-text">
-        <div style="font-size: 2rem; font-weight: 800; line-height: 1;" class="hid-txt">{{ hidden_audit.total_detected }}</div>
-        <div class="stat-lbl">Hidden Networks</div>
-    </div>
-    <div style="font-size: 0.8rem; color: var(--text-mut); max-width: 200px; text-align: right;">
-        Passive scan detected cloaked SSIDs. Active probing may reveal more.
-    </div>
-  </div>
-
-  <!-- AP Networks Title -->
-  <div class="networks-header">
-    Detected Access Points
-  </div>
-
-  <!-- AP Cards -->
-  {% if networks %}
-    {% for ap in networks %}
-      {% set sc = ap.security_score %}
-      {% set score = sc.score %}
-      {% set ring_cls = 'ring-crit' if score < 30 else ('ring-high' if score < 55 else ('ring-med' if score < 80 else 'ring-safe')) %}
-      
-      <div class="bento-card ap-card">
-        <div class="ap-header">
-          <div>
-            <div class="ap-ssid" style="{% if not ap.ssid or ap.ssid == 'Hidden Network' %}color: var(--hidden);{% endif %}">{{ ap.ssid or '&lt;HIDDEN&gt;' }}</div>
-            <div class="ap-bssid">{{ ap.bssid }}</div>
-          </div>
-          <div class="ap-score-ring {{ ring_cls }}">{{ score }}</div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section-label">Summary</div>
+    <div class="sidebar-stat-block">
+      <div class="stat-grid">
+        <div class="s-stat">
+          <div class="s-stat-num num-danger">{{ counts.critical }}</div>
+          <div class="s-stat-lbl">Critical</div>
         </div>
-
-        <div class="ap-tags">
-          <span class="tag tag-sec">{{ ap.security }}/{{ ap.encryption }}</span>
-          <span class="tag">CH {{ ap.channel }}</span>
-          <span class="tag">SIG {{ ap.signal }}%</span>
-          {% if ap.is_default_ssid %}<span class="tag tag-warn">DEFAULT SSID</span>{% endif %}
-          {% if ap.wps_enabled %}<span class="tag tag-err">WPS ENABLED</span>{% endif %}
-          {% if ap.broadcast_on %}<span class="tag">BROADCAST ON</span>{% endif %}
+        <div class="s-stat">
+          <div class="s-stat-num num-warning">{{ counts.high }}</div>
+          <div class="s-stat-lbl">High</div>
         </div>
-
-        <div class="ap-findings">
-          {% if sc.findings %}
-            <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-mut); margin-bottom: 4px; text-transform: uppercase;">Audit Findings</div>
-            {% for f in sc.findings %}
-              {% set f_cls = 'val-crit' if f.severity == 'CRITICAL' else ('val-high' if f.severity == 'HIGH' else 'val-med') %}
-              <div class="finding {{ f_cls }}">
-                <span>{{ f.label }} <span style="opacity:0.6;font-size:0.75rem;">({{ f.deduction }} pts)</span></span>
-              </div>
-            {% endfor %}
-          {% else %}
-             <div class="finding" style="color:var(--safe)"><span>✓ No security issues detected based on passive scan.</span></div>
-          {% endif %}
-
-          {% if ap.audit_result and ap.audit_result.recommendation != "No action required. Continue using WPA2-AES/CCMP." %}
-          <div class="ap-rec">
-            <strong>Recommendation:</strong> {{ ap.audit_result.recommendation }}
-          </div>
-          {% endif %}
+        <div class="s-stat">
+          <div class="s-stat-num" style="color:#fde68a;">{{ counts.medium }}</div>
+          <div class="s-stat-lbl">Moderate</div>
+        </div>
+        <div class="s-stat">
+          <div class="s-stat-num num-success">{{ counts.safe }}</div>
+          <div class="s-stat-lbl">Secure</div>
         </div>
       </div>
-    {% endfor %}
-  {% else %}
-    <div class="bento-card" style="grid-column: span 12;">
-        <div class="empty-state">No networks were found.</div>
-    </div>
-  {% endif %}
-
-  <!-- Hidden Networks Detailed -->
-  <div class="bento-card bottom-section">
-    <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;">Cloaked SSIDs (Hidden Networks)</div>
-    <div style="font-size: 0.85rem; color: var(--text-mut); margin-bottom: 16px; background: #27272a; padding: 12px; border-radius: 12px;">
-      {{ hidden_audit.lecture_note }}
-    </div>
-    
-    {% if hidden_audit.hidden %}
-      <table class="bento-table">
-        <thead>
-          <tr>
-            <th>BSSID</th>
-            <th>CH</th>
-            <th>Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for h in hidden_audit.hidden %}
-          <tr>
-            <td style="color: var(--hidden)">{{ h.bssid }}</td>
-            <td>{{ h.channel }}</td>
-            <td style="font-size: 0.75rem;">{{ h.detection_method }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <div class="empty-state" style="padding: 20px;">No hidden networks detected in current scan area.</div>
-    {% endif %}
-  </div>
-
-  <!-- MAC Audit -->
-  <div class="bento-card bottom-section">
-    <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;">MAC Whitelist Audit</div>
-    <div style="font-size: 0.85rem; color: var(--text-mut); margin-bottom: 16px; background: #27272a; padding: 12px; border-radius: 12px;">
-      {{ mac_audit.lecture_note }}
     </div>
 
-    {% if mac_audit.total_devices > 0 %}
-      <table class="bento-table">
-        <thead>
-          <tr>
-            <th>IP</th>
-            <th>MAC</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for d in mac_audit.authorized %}
-          <tr><td>{{ d.ip }}</td><td>{{ d.mac }}</td><td style="color:var(--safe)">✓ AUTHORIZED</td></tr>
-          {% endfor %}
-          {% for d in mac_audit.unauthorized %}
-          <tr><td>{{ d.ip }}</td><td>{{ d.mac }}</td><td style="color:var(--crit)">⚠ UNAUTHORIZED</td></tr>
-          {% endfor %}
-          {% for d in mac_audit.unknown_status %}
-          <tr><td>{{ d.ip }}</td><td>{{ d.mac }}</td><td style="color:var(--med)">? NO WHITELIST</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <div class="empty-state" style="padding: 20px;">No active devices found in local ARP cache.</div>
-    {% endif %}
-  </div>
+    <div class="sidebar-section-label">Sections</div>
+    <nav class="sidebar-nav">
+      <a href="#kpis">📊 Overview</a>
+      <a href="#ap-scan">📡 Access Points</a>
+      <a href="#hidden">🔭 Hidden Networks</a>
+      <a href="#mac">🔐 MAC Audit</a>
+    </nav>
 
-  <!-- Footer -->
-  <div class="bento-card footer-card">
-    WifiShield Security Auditor v3.0 · Based on Lecture 7 (Ch 11) & Lecture 8
-  </div>
+    <div class="sidebar-section-label" style="margin-top: 20px;">Reference</div>
+    <nav class="sidebar-nav">
+      <a href="#">Lecture 7 — Ch.11</a>
+      <a href="#">Lecture 8 — Exploitation</a>
+    </nav>
+  </aside>
 
-</div>
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-eyebrow">CNC 421 — Ethical Hacking &amp; Penetration Testing</div>
+      <h1 class="page-header-title">WiFi Security Audit Report</h1>
+      <p class="page-header-sub">Passive wireless scan based on Lecture 7: Chapter 11 — Hacking Wireless Networks</p>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="kpi-row" id="kpis">
+      <div class="kpi-card kc-danger">
+        <div class="kpi-num">{{ counts.critical }}</div>
+        <div class="kpi-lbl">Critical Risk</div>
+      </div>
+      <div class="kpi-card kc-warning">
+        <div class="kpi-num">{{ counts.high }}</div>
+        <div class="kpi-lbl">High Risk</div>
+      </div>
+      <div class="kpi-card kc-primary" style="background: #FFFBEB;">
+        <div class="kpi-num" style="color:var(--clr-warning);">{{ counts.medium }}</div>
+        <div class="kpi-lbl">Moderate</div>
+      </div>
+      <div class="kpi-card kc-success">
+        <div class="kpi-num">{{ counts.safe }}</div>
+        <div class="kpi-lbl">Secure</div>
+      </div>
+      <div class="kpi-card kc-cyan">
+        <div class="kpi-num">{{ hidden_audit.total_detected }}</div>
+        <div class="kpi-lbl">Hidden Nets</div>
+      </div>
+    </div>
+
+    <!-- AP Table -->
+    <section class="section" id="ap-scan">
+      <div class="section-header">
+        <h2 class="section-title">Access Point Scan</h2>
+        <span class="section-count-badge">{{ total_aps }} networks</span>
+      </div>
+
+      {% if networks %}
+      {% for ap in networks %}
+      {% set sc = ap.security_score %}
+      {% set score = sc.score %}
+      {% set score_color = '#DC2626' if score < 30 else ('#F97316' if score < 55 else ('#D97706' if score < 80 else '#16A34A')) %}
+      {% set enc_badge = 'badge-danger' if ap.encryption_risk == 'CRITICAL' else ('badge-warning' if ap.encryption_risk == 'MEDIUM' else ('badge-success' if ap.encryption_risk == 'SAFE' else 'badge-neutral')) %}
+      {% set sig_cls = 'sig-4' if ap.signal >= 80 else ('sig-3' if ap.signal >= 60 else ('sig-2' if ap.signal >= 40 else 'sig-1')) %}
+
+      <div class="card" style="margin-bottom: 16px;">
+        <table class="ent-table">
+          <thead>
+            <tr>
+              <th style="width: 30%">Network</th>
+              <th>Security</th>
+              <th>Signal</th>
+              <th>Channel</th>
+              <th>Flags</th>
+              <th style="width: 150px">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <span class="cell-ssid {% if not ap.ssid %}hidden-ssid{% endif %}">
+                  {{ ap.ssid or '&lt;Hidden Network&gt;' }}
+                </span>
+                <span class="cell-bssid">{{ ap.bssid }}</span>
+              </td>
+              <td>
+                <span class="badge {{ enc_badge }}">
+                  {{ ap.security }}
+                </span>
+                <span style="display:block; font-family: var(--font-mono); font-size:11px; color:var(--clr-muted); margin-top:3px;">{{ ap.encryption }}</span>
+              </td>
+              <td>
+                <div class="signal-dots {{ sig_cls }}">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+                <small class="cell-mono" style="display:block;margin-top:3px;color:var(--clr-muted);">{{ ap.signal }}%</small>
+              </td>
+              <td class="cell-mono">{{ ap.channel }}</td>
+              <td style="vertical-align: middle;">
+                <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                  {% if ap.is_default_ssid %}<span class="badge badge-warning">Default SSID</span>{% endif %}
+                  {% if ap.wps_enabled %}<span class="badge badge-danger">WPS On</span>{% endif %}
+                  {% if ap.broadcast_on %}<span class="badge badge-neutral">Broadcast</span>{% endif %}
+                  {% if not ap.is_default_ssid and not ap.wps_enabled %}<span class="badge badge-neutral">—</span>{% endif %}
+                </div>
+              </td>
+              <td>
+                <div class="score-cell">
+                  <span class="score-num" style="color: {{ score_color }};">{{ score }}</span>
+                  <div class="score-track">
+                    <div class="score-fill" style="width:{{ score }}%;background:{{ score_color }};"></div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        {% if sc.findings %}
+        <div style="padding: var(--sp-2) 0 var(--sp-2);">
+          {% for f in sc.findings %}
+          {% set fc = 'f-danger' if f.severity == 'CRITICAL' else ('f-warning' if f.severity in ['HIGH', 'MEDIUM'] else 'f-info') %}
+          <div class="finding-row {{ fc }}">
+            <span>{{ f.label }}</span>
+            <span class="finding-pts">{{ f.deduction }}</span>
+          </div>
+          {% endfor %}
+          {% if ap.audit_result %}
+          <div class="rec-block">
+            <strong>💡 Recommendation</strong>
+            {{ ap.audit_result.recommendation }}
+            <span class="ref-note">{{ ap.audit_result.lecture_ref }}</span>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      {% else %}
+      <div class="card">
+        <div class="empty-state">
+          <div class="empty-state-icon">📡</div>
+          <div class="empty-state-label">No networks detected</div>
+          <p>Ensure WiFi is enabled and the scan was run with administrator privileges.</p>
+        </div>
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- Hidden Networks -->
+    <section class="section" id="hidden">
+      <div class="section-header">
+        <h2 class="section-title">Hidden Network Detection</h2>
+        <span class="section-count-badge" style="background: #0891b2;">{{ hidden_audit.total_detected }} detected</span>
+      </div>
+
+      <div class="lecture-note">
+        <strong>Lecture Reference — Ch.11</strong>
+        {{ hidden_audit.lecture_note }}
+      </div>
+
+      {% if hidden_audit.hidden %}
+      <div class="card">
+        <table class="ent-table">
+          <thead>
+            <tr>
+              <th>BSSID</th>
+              <th>Channel</th>
+              <th>Signal</th>
+              <th>Auth</th>
+              <th>Detection Method</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for h in hidden_audit.hidden %}
+            <tr>
+              <td class="cell-mono" style="color:#0891b2;">{{ h.bssid }}</td>
+              <td class="cell-mono">{{ h.channel }}</td>
+              <td class="cell-mono">{{ h.signal }}%</td>
+              <td><span class="badge badge-neutral">{{ h.auth }}</span></td>
+              <td><span style="font-size:12px;color:var(--clr-muted);">{{ h.detection_method }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% if hidden_audit.attacker_note %}
+        <div class="rec-block" style="margin: var(--sp-4) var(--sp-5);">
+          <strong>⚠ Attacker Perspective</strong>
+          {{ hidden_audit.attacker_note }}
+        </div>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="card">
+        <div class="empty-state">
+          <div class="empty-state-icon">🔭</div>
+          <div class="empty-state-label">No hidden networks detected</div>
+          <p>No cloaked SSIDs were found in the current scan. Active probing tools (Kismet-style) may reveal additional networks not visible in passive scanning.</p>
+        </div>
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- MAC Audit -->
+    <section class="section" id="mac">
+      <div class="section-header">
+        <h2 class="section-title">MAC Address Audit</h2>
+        <span class="section-count-badge">{{ mac_audit.total_devices }} devices</span>
+      </div>
+
+      <div class="lecture-note">
+        <strong>Lecture Reference — Countermeasures (p.95)</strong>
+        {{ mac_audit.lecture_note }}
+      </div>
+
+      <div class="card">
+        {% if mac_audit.total_devices > 0 %}
+        <table class="ent-table">
+          <thead>
+            <tr>
+              <th>IP Address</th>
+              <th>MAC Address</th>
+              <th>ARP Type</th>
+              <th>Whitelist Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in mac_audit.authorized %}
+            <tr>
+              <td class="cell-mono">{{ d.ip }}</td>
+              <td class="cell-mono">{{ d.mac }}</td>
+              <td><span class="badge badge-neutral">{{ d.type }}</span></td>
+              <td><span class="badge badge-success">✓ Authorized</span></td>
+            </tr>
+            {% endfor %}
+            {% for d in mac_audit.unauthorized %}
+            <tr>
+              <td class="cell-mono">{{ d.ip }}</td>
+              <td class="cell-mono" style="color:var(--clr-danger);">{{ d.mac }}</td>
+              <td><span class="badge badge-neutral">{{ d.type }}</span></td>
+              <td><span class="badge badge-danger">⚠ Unauthorized</span></td>
+            </tr>
+            {% endfor %}
+            {% for d in mac_audit.unknown_status %}
+            <tr>
+              <td class="cell-mono">{{ d.ip }}</td>
+              <td class="cell-mono">{{ d.mac }}</td>
+              <td><span class="badge badge-neutral">{{ d.type }}</span></td>
+              <td><span class="badge badge-warning">? No Whitelist</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-state-icon">🔐</div>
+          <div class="empty-state-label">No active devices found</div>
+          <p>No dynamic entries were found in the local ARP cache.</p>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+
+  </main><!-- /main-content -->
+</div><!-- /layout -->
+
+<footer class="footer">
+  <strong>WifiShield Security Auditor</strong> &mdash;
+  Based on Lecture 7: Chapter 11 (Hacking Wireless Networks) &amp; Lecture 8: Gaining Access &mdash;
+  CNC 421 Ethical Hacking &amp; Penetration Testing &mdash;
+  Generated: {{ scan_time }}
+</footer>
 
 </body>
 </html>
