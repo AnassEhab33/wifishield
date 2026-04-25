@@ -11,23 +11,26 @@
 
     /* ═══════════════════════════════════════════════════
        SWISS / INTERNATIONAL EDITORIAL DESIGN SYSTEM
+       ── DARK EDITION ──
        ─ Typography-first, grid-disciplined, zero ornament
        ─ All visual interest from proportion and contrast
     ═══════════════════════════════════════════════════ */
 
     :root {
-      --ink:         #080808;
-      --ink-muted:   #5A5A5A;
-      --ink-faint:   #AAAAAA;
-      --paper:       #F8F7F3;
-      --rule:        #080808;
-      --accent:      #D12B2B;
-      --accent-dim:  #FDE8E8;
-      --safe:        #1A6B3A;
-      --safe-dim:    #E6F4EC;
-      --warn:        #996600;
-      --warn-dim:    #FFF8E6;
-      --white:       #FFFFFF;
+      --ink:         #EDEBE4;
+      --ink-muted:   #8A8880;
+      --ink-faint:   #444440;
+      --paper:       #0D0D0B;
+      --paper-2:     #141412;
+      --rule:        #2C2C28;
+      --rule-strong: #444440;
+      --accent:      #E8372C;
+      --accent-dim:  #2A1210;
+      --safe:        #22C55E;
+      --safe-dim:    #0C2018;
+      --warn:        #F59E0B;
+      --warn-dim:    #201A08;
+      --white:       #EDEBE4;
 
       --f-display: 'Barlow Condensed', sans-serif;
       --f-body:    'IBM Plex Sans', sans-serif;
@@ -50,8 +53,9 @@
     }
 
     .masthead-top {
-      background: var(--ink);
+      background: #060604;
       color: var(--white);
+      border-bottom: 1px solid var(--rule);
       padding: 6px 48px;
       display: flex;
       justify-content: space-between;
@@ -210,7 +214,7 @@
     .rrb-fill-track {
       flex: 1;
       height: 4px;
-      background: #E0DED8;
+      background: #222220;
       margin: 0 8px;
       border-radius: 0;
     }
@@ -270,7 +274,7 @@
 
     /* ── AP ENTRY ─────────────────────────────────────── */
     .ap-entry {
-      border-bottom: 1px solid #DDDBD5;
+      border-bottom: 1px solid var(--rule);
       padding: 24px 0;
       display: grid;
       grid-template-columns: 48px 1fr auto;
@@ -302,7 +306,7 @@
       margin-bottom: 6px;
     }
 
-    .ap-headline.hl-hidden { color: #0070A0; font-style: italic; }
+    .ap-headline.hl-hidden { color: #38BDF8; font-style: italic; }
     .ap-headline.hl-alert { color: var(--accent); }
 
     .ap-byline {
@@ -333,7 +337,7 @@
       padding: 5px 0;
       font-size: 12px;
       line-height: 1.4;
-      border-bottom: 1px dotted #DDDBD5;
+      border-bottom: 1px dotted var(--rule);
     }
 
     .finding-line:last-child { border-bottom: none; }
@@ -346,8 +350,8 @@
     }
 
     .fl-dot.d-red    { background: var(--accent); }
-    .fl-dot.d-orange { background: #E07B00; }
-    .fl-dot.d-yellow { background: #B89200; }
+    .fl-dot.d-orange { background: #FB923C; }
+    .fl-dot.d-yellow { background: #FBBF24; }
     .fl-dot.d-green  { background: var(--safe); }
 
     .fl-pts {
@@ -359,7 +363,7 @@
       padding-left: 8px;
     }
 
-    .ap-rec-col { border-left: 2px solid #DDDBD5; padding-left: 20px; }
+    .ap-rec-col { border-left: 2px solid var(--rule); padding-left: 20px; }
 
     .rec-head {
       font-family: var(--f-mono);
@@ -421,17 +425,17 @@
       text-transform: uppercase;
     }
 
-    .tag-red    { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
-    .tag-orange { color: #B85C00; border-color: #E07B00; background: var(--warn-dim); }
-    .tag-green  { color: var(--safe); border-color: var(--safe); background: var(--safe-dim); }
-    .tag-ink    { color: var(--ink-muted); border-color: #CCC; background: transparent; }
-    .tag-cyan   { color: #0070A0; border-color: #5BC8F5; background: #EAF7FD; }
+    .tag-red    { color: #FF6B6B; border-color: #FF6B6B; background: var(--accent-dim); }
+    .tag-orange { color: #FB923C; border-color: #9A4D00; background: var(--warn-dim); }
+    .tag-green  { color: var(--safe); border-color: #166534; background: var(--safe-dim); }
+    .tag-ink    { color: var(--ink-muted); border-color: var(--rule-strong); background: transparent; }
+    .tag-cyan   { color: #38BDF8; border-color: #0E4D6B; background: #071522; }
 
     /* ── LECTURE REFERENCE CALLOUT ────────────────────── */
     .lec-callout {
-      background: var(--white);
-      border: 1px solid #DDDBD5;
-      border-left: 4px solid var(--ink);
+      background: var(--paper-2);
+      border: 1px solid var(--rule);
+      border-left: 4px solid var(--rule-strong);
       padding: 14px 20px;
       margin: 0 0 24px;
       display: flex;
@@ -461,8 +465,8 @@
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 1px;
-      background: var(--ink);
-      border: 1px solid var(--ink);
+      background: var(--rule);
+      border: 1px solid var(--rule);
       margin-top: 16px;
     }
 
@@ -475,7 +479,7 @@
       font-family: var(--f-mono);
       font-size: 13px;
       font-weight: 700;
-      color: #0070A0;
+      color: #38BDF8;
       display: block;
       margin-bottom: 8px;
     }
@@ -488,10 +492,10 @@
       border-collapse: collapse;
       font-family: var(--f-mono);
       font-size: 12px;
-      border: 1px solid var(--ink);
+      border: 1px solid var(--rule);
     }
 
-    .mac-table thead tr { background: var(--ink); color: var(--white); }
+    .mac-table thead tr { background: var(--paper-2); color: var(--ink); border-bottom: 2px solid var(--rule-strong); }
     .mac-table th {
       text-align: left;
       padding: 8px 16px;
@@ -503,12 +507,12 @@
 
     .mac-table td {
       padding: 10px 16px;
-      border-bottom: 1px solid #DDDBD5;
+      border-bottom: 1px solid var(--rule);
       vertical-align: middle;
     }
 
     .mac-table tr:last-child td { border-bottom: none; }
-    .mac-table tbody tr:nth-child(even) { background: var(--white); }
+    .mac-table tbody tr:nth-child(even) { background: #111110; }
 
     .mac-status-ok    { color: var(--safe); font-weight: 700; }
     .mac-status-bad   { color: var(--accent); font-weight: 700; }
@@ -518,7 +522,7 @@
     .empty-state {
       padding: 48px;
       text-align: center;
-      border: 1px dashed #CCCAC4;
+      border: 1px dashed var(--rule-strong);
     }
 
     .es-num {
@@ -526,7 +530,7 @@
       font-size: 80px;
       font-weight: 900;
       line-height: 1;
-      color: #E0DED8;
+      color: #232320;
     }
 
     .es-label {
@@ -541,8 +545,8 @@
 
     /* ── COLOPHON / FOOTER ────────────────────────────── */
     .colophon {
-      border-top: 4px solid var(--rule);
-      background: var(--white);
+      border-top: 4px solid var(--rule-strong);
+      background: var(--paper-2);
       padding: 16px 48px;
       display: flex;
       justify-content: space-between;
@@ -618,7 +622,7 @@
       <span class="k-lbl">Secure</span>
     </div>
     <div class="kpi-strip-item">
-      <span class="k-num" style="color:#0070A0;">{{ hidden_audit.total_detected }}</span>
+      <span class="k-num" style="color:#38BDF8;">{{ hidden_audit.total_detected }}</span>
       <span class="k-lbl">Hidden SSID</span>
     </div>
   </div>
@@ -692,7 +696,7 @@
     {% for ap in networks %}
     {% set sc = ap.security_score %}
     {% set score = sc.score %}
-    {% set score_color = '#D12B2B' if score < 30 else ('#E07B00' if score < 55 else ('#B89200' if score < 80 else '#1A6B3A')) %}
+    {% set score_color = '#FF6B6B' if score < 30 else ('#FB923C' if score < 55 else ('#FBBF24' if score < 80 else '#22C55E')) %}
     {% set risk_label = 'CRITICAL' if score < 30 else ('HIGH RISK' if score < 55 else ('MODERATE' if score < 80 else 'SECURE')) %}
     {% set hl_class = 'hl-alert' if score < 30 else ('' if score >= 80 else '') %}
 
@@ -736,7 +740,7 @@
               <div class="finding-line">
                 <div class="fl-dot {{ dc }}"></div>
                 <span style="font-size:12px; line-height:1.4;">{{ f.label }}</span>
-                <span class="fl-pts" style="color: {{ '#D12B2B' if f.severity == 'CRITICAL' else ('#E07B00' if f.severity == 'HIGH' else '#B89200') }};">{{ f.deduction }}</span>
+                <span class="fl-pts" style="color: {{ '#FF6B6B' if f.severity == 'CRITICAL' else ('#FB923C' if f.severity == 'HIGH' else '#FBBF24') }};">{{ f.deduction }}</span>
               </div>
               {% endfor %}
             {% else %}
