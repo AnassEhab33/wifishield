@@ -670,6 +670,32 @@
 
 </div>
 
+{% if arp_audit and arp_audit.attack_detected %}
+<!-- ═══ MITM ALERT STRIP ════════════════════════════ -->
+<div style="background-color: #E8372C; color: white; padding: 20px 48px; font-family: var(--f-body); display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(0,0,0,0.2);">
+  <div>
+    <h2 style="font-family: var(--f-display); font-size: 32px; letter-spacing: 1px; margin-bottom: 4px; line-height: 1;">CRITICAL: MAN-IN-THE-MIDDLE ATTACK DETECTED</h2>
+    <p style="font-size: 14px; opacity: 0.9;">{{ arp_audit.details }}</p>
+  </div>
+  <div style="font-family: var(--f-mono); font-size: 12px; font-weight: bold; background: rgba(0,0,0,0.3); padding: 8px 16px; border: 1px solid rgba(255,255,255,0.2);">
+    MITIGATION: FLUSH ARP / STATIC IP
+  </div>
+</div>
+{% endif %}
+
+{% if deauth_audit and deauth_audit.attack_detected %}
+<!-- ═══ CRITICAL ALERT STRIP ════════════════════════════ -->
+<div style="background-color: #E8372C; color: white; padding: 20px 48px; font-family: var(--f-body); display: flex; align-items: center; justify-content: space-between;">
+  <div>
+    <h2 style="font-family: var(--f-display); font-size: 32px; letter-spacing: 1px; margin-bottom: 4px; line-height: 1;">CRITICAL: DEAUTHENTICATION ATTACK DETECTED</h2>
+    <p style="font-size: 14px; opacity: 0.9;">System detected {{ deauth_audit.disconnect_count }} rapid forced disconnections during the audit, highly indicative of a targeted Deauth attack. Auto-reconnect should be disabled.</p>
+  </div>
+  <div style="font-family: var(--f-mono); font-size: 12px; font-weight: bold; background: rgba(0,0,0,0.3); padding: 8px 16px; border: 1px solid rgba(255,255,255,0.2);">
+    MITIGATION: WPA3 / 802.11w
+  </div>
+</div>
+{% endif %}
+
 <!-- ═══ BODY ════════════════════════════════════════════ -->
 <div class="editorial-body">
 

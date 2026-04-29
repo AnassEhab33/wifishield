@@ -11,6 +11,8 @@ from jinja2 import Environment, FileSystemLoader
 
 def generate_report(networks: list, mac_audit: dict,
                     evil_twin_audit: dict = None,
+                    deauth_audit: dict = None,
+                    arp_audit: dict = None,
                     output_dir: str = None) -> str:
     """
     Generate HTML security report.
@@ -46,11 +48,17 @@ def generate_report(networks: list, mac_audit: dict,
             'flagged': [], 'total': 0, 'critical_count': 0,
             'note': ''
         }
+    if deauth_audit is None:
+        deauth_audit = {'attack_detected': False, 'disconnect_count': 0, 'risk': 'SAFE'}
+    if arp_audit is None:
+        arp_audit = {'attack_detected': False, 'risk': 'SAFE', 'details': ''}
 
     html_content = template.render(
         networks=networks,
         mac_audit=mac_audit,
         evil_twin_audit=evil_twin_audit,
+        deauth_audit=deauth_audit,
+        arp_audit=arp_audit,
         scan_time=scan_time,
         total_aps=len(networks),
         counts=counts

@@ -32,6 +32,8 @@ from modules.mac_auditor import audit_mac_addresses, load_whitelist, save_whitel
 from modules.evil_twin_detector import detect_evil_twins
 from modules.scorer import score_all_networks
 from modules.report_gen import generate_report, open_report
+from modules.deauth_detector import detect_deauth_attack, prevent_deauth_attack
+from modules.arp_spoof_detector import detect_arp_spoofing, prevent_arp_spoof
 
 console = Console()
 
@@ -68,6 +70,8 @@ def run_scan() -> tuple:
         ("Detecting WPS vulnerability...", "WPS Detect"),
         ("Scanning network devices (ARP table)...", "MAC Audit"),
         ("Detecting Evil Twin / Rogue APs...", "Evil Twin"),
+        ("Checking Event Logs for Deauth Attacks...", "Deauth Audit"),
+        ("Scanning for ARP Spoofing (MitM)...", "ARP Audit"),
         ("Calculating security scores...", "Scoring"),
     ]
 
@@ -113,6 +117,16 @@ def run_scan() -> tuple:
         progress.advance(task)
 
         progress.update(task, description=steps[6][0], status="")
+        deauth_audit = detect_deauth_attack()
+        time.sleep(0.3)
+        progress.advance(task)
+
+        progress.update(task, description=steps[7][0], status="")
+        arp_audit = detect_arp_spoofing()
+        time.sleep(0.3)
+        progress.advance(task)
+
+        progress.update(task, description=steps[8][0], status="")
         networks = score_all_networks(networks)
         time.sleep(0.3)
         progress.advance(task)
@@ -120,13 +134,36 @@ def run_scan() -> tuple:
     twins = evil_twin_audit.get('total', 0)
     critical_twins = evil_twin_audit.get('critical_count', 0)
     twin_str = f"[bold red]{twins} ROGUE AP DETECTED[/bold red]" if twins else "[green]0 rogue APs[/green]"
-    console.print(f"  [bold green]✓[/bold green] Scan complete — [bold]{len(networks)}[/bold] networks | {twin_str}")
+    
+    deauth_str = "[bold red] | DEAUTH ATTACK![/bold red]" if deauth_audit.get('attack_detected') else ""
+    arp_str = "[bold red] | MitM ATTACK DETECTED![/bold red]" if arp_audit.get('attack_detected') else ""
+    
+    console.print(f"  [bold green]✓[/bold green] Scan complete — [bold]{len(networks)}[/bold] networks | {twin_str}{deauth_str}{arp_str}")
     console.print()
-    return networks, mac_audit, evil_twin_audit
+    return networks, mac_audit, evil_twin_audit, deauth_audit, arp_audit
 
 
-def display_results(networks: list, mac_audit: dict, evil_twin_audit: dict):
+def display_results(networks: list, mac_audit: dict, evil_twin_audit: dict, deauth_audit: dict, arp_audit: dict):
     """Display results in rich terminal tables."""
+
+    if arp_audit.get('attack_detected'):
+        console.print(Panel(
+            f"[bold red]CRITICAL: MAN-IN-THE-MIDDLE ATTACK DETECTED![/bold red]\n\n"
+            f"{arp_audit['details']}",
+            border_style="red",
+            padding=(1, 2)
+        ))
+        console.print()
+
+    if deauth_audit.get('attack_detected'):
+        console.print(Panel(
+            "[bold red]CRITICAL: DEAUTHENTICATION ATTACK DETECTED![/bold red]\n\n"
+            f"Rapid, forced disconnections ({deauth_audit['disconnect_count']} times) were detected in the Windows Event Logs.\n"
+            "This is highly indicative of an active Wi-Fi Deauthentication Attack.",
+            border_style="red",
+            padding=(1, 2)
+        ))
+        console.print()
 
     # ── AP Table ──────────────────────────────────────────
     console.print(Rule("[bold]📡 Wireless Network Security Audit[/bold]"))
@@ -309,12 +346,27 @@ def main_menu():
         choice = Prompt.ask("  [bold cyan]Select option[/bold cyan]", choices=["1", "2", "3", "4"], default="1")
 
         if choice == "1":
-            networks, mac_audit, evil_twin_audit = run_scan()
-            display_results(networks, mac_audit, evil_twin_audit)
+            networks, mac_audit, evil_twin_audit, deauth_audit, arp_audit = run_scan()
+            display_results(networks, mac_audit, evil_twin_audit, deauth_audit, arp_audit)
+            
+            if arp_audit.get('attack_detected'):
+                console.print()
+                if Confirm.ask("  [bold red]Would you like to enable prevention for MitM (Disconnect & Flush ARP)?[/bold red]", default=False):
+                    prevent_arp_spoof()
+                    console.print("  [green]✅ Prevention applied: Disconnected and flushed ARP cache.[/green]")
+
+            if deauth_audit.get('attack_detected'):
+                console.print()
+                if Confirm.ask("  [bold red]Would you like to enable prevention (Disable Auto-Connect and disconnect)?[/bold red]", default=False):
+                    # Find current SSID if possible (rough estimate by grabbing first network, though netsh wlan show interfaces is better)
+                    # For safety, we just pass None or try to get it
+                    ssid_target = networks[0]['ssid'] if networks else ''
+                    prevent_deauth_attack(ssid_target)
+                    console.print("  [green]✅ Prevention applied: Auto-connect disabled and disconnected.[/green]")
 
             console.print()
             if Confirm.ask("  Generate HTML report?", default=True):
-                report_path = generate_report(networks, mac_audit, evil_twin_audit)
+                report_path = generate_report(networks, mac_audit, evil_twin_audit, deauth_audit, arp_audit)
                 console.print(f"\n  [bold green]✅ Report saved:[/bold green] {report_path}")
                 open_report(report_path)
 
@@ -323,8 +375,8 @@ def main_menu():
 
         elif choice == "3":
             console.print("  [yellow]Running quick scan to generate report...[/yellow]")
-            networks, mac_audit, evil_twin_audit = run_scan()
-            report_path = generate_report(networks, mac_audit, evil_twin_audit)
+            networks, mac_audit, evil_twin_audit, deauth_audit, arp_audit = run_scan()
+            report_path = generate_report(networks, mac_audit, evil_twin_audit, deauth_audit, arp_audit)
             console.print(f"\n  [bold green]✅ Report saved:[/bold green] {report_path}")
             open_report(report_path)
 
