@@ -46,12 +46,10 @@ def detect_arp_spoofing() -> dict:
                 mac = match.group(2).replace('-', ':').upper()
                 entry_type = match.group(3)
 
-                # Ignore broadcast, multicast, and static system entries
+                # Ignore broadcast and multicast entries
                 if ip.endswith('.255') or ip.startswith('224.') or ip.startswith('239.'):
                     continue
                 if mac.startswith('FF') or mac.startswith('01:00:5E'):
-                    continue
-                if entry_type.lower() == 'static':
                     continue
                 
                 if mac not in mac_to_ips:
@@ -91,16 +89,23 @@ def detect_arp_spoofing() -> dict:
 
     return result
 
-def prevent_arp_spoof():
+def prevent_arp_spoof() -> tuple[bool, str]:
     """
     Attempt to flush the ARP cache and disconnect the network.
-    Note: 'arp -d *' requires Administrator privileges.
+    Returns (success, message).
     """
     try:
-        # Flush ARP (might fail if not admin, but we try)
-        subprocess.run(['arp', '-d', '*'], capture_output=True, timeout=5)
+        # Try to flush ARP
+        result = subprocess.run(['arp', '-d', '*'], capture_output=True, text=True, timeout=5)
+        
         # Disconnect to protect user
         subprocess.run(['netsh', 'wlan', 'disconnect'], capture_output=True, timeout=5)
-        return True
-    except Exception:
-        return False
+        
+        if result.returncode != 0:
+            if "elevation" in result.stdout.lower() or "elevation" in result.stderr.lower() or "requires" in result.stdout.lower():
+                return False, "Failed to flush ARP cache. Please run WifiShield as Administrator to clear the poisoned cache. (Wi-Fi disconnected for safety)."
+            return False, f"Failed to flush ARP: {result.stderr or result.stdout}"
+            
+        return True, "ARP cache successfully flushed and Wi-Fi disconnected."
+    except Exception as e:
+        return False, f"Error applying prevention: {str(e)}"

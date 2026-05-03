@@ -352,8 +352,11 @@ def main_menu():
             if arp_audit.get('attack_detected'):
                 console.print()
                 if Confirm.ask("  [bold red]Would you like to enable prevention for MitM (Disconnect & Flush ARP)?[/bold red]", default=False):
-                    prevent_arp_spoof()
-                    console.print("  [green]✅ Prevention applied: Disconnected and flushed ARP cache.[/green]")
+                    success, msg = prevent_arp_spoof()
+                    if success:
+                        console.print(f"  [green]✅ {msg}[/green]")
+                    else:
+                        console.print(f"  [yellow]⚠ {msg}[/yellow]")
 
             if deauth_audit.get('attack_detected'):
                 console.print()
