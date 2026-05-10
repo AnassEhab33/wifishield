@@ -18,6 +18,7 @@ try:
     from rich.columns import Columns
     from rich.rule import Rule
     from rich.prompt import Prompt, Confirm
+    from rich.markup import escape
 except ImportError:
     print("Please install dependencies: pip install rich jinja2")
     sys.exit(1)
@@ -336,14 +337,15 @@ def main_menu():
             "[bold cyan]1[/bold cyan]  Run Full Security Audit\n"
             "[bold cyan]2[/bold cyan]  Manage MAC Whitelist\n"
             "[bold cyan]3[/bold cyan]  Generate HTML Report\n"
-            "[bold cyan]4[/bold cyan]  Exit",
+            "[bold cyan]4[/bold cyan]  Start AI Real-Time Defense Dashboard\n"
+            "[bold cyan]5[/bold cyan]  Exit",
             title="[bold]Main Menu[/bold]",
             border_style="dim blue",
             padding=(1, 4)
         ))
         console.print()
 
-        choice = Prompt.ask("  [bold cyan]Select option[/bold cyan]", choices=["1", "2", "3", "4"], default="1")
+        choice = Prompt.ask("  [bold cyan]Select option[/bold cyan]", choices=["1", "2", "3", "4", "5"], default="1")
 
         if choice == "1":
             networks, mac_audit, evil_twin_audit, deauth_audit, arp_audit = run_scan()
@@ -379,11 +381,33 @@ def main_menu():
         elif choice == "3":
             console.print("  [yellow]Running quick scan to generate report...[/yellow]")
             networks, mac_audit, evil_twin_audit, deauth_audit, arp_audit = run_scan()
-            report_path = generate_report(networks, mac_audit, evil_twin_audit, deauth_audit, arp_audit)
+            
+            duration_str = input("  [?] How many seconds should the AI capture traffic? (Default 5): ").strip()
+            timeout = int(duration_str) if duration_str.isdigit() else 5
+            
+            console.print(f"  [cyan]Running Deep Learning AI Audit ({timeout} seconds)...[/cyan]")
+            try:
+                from ai_models.live_inference import run_ai_audit
+                ai_stats = run_ai_audit(timeout=timeout)
+            except Exception as e:
+                console.print("  [dim]AI Audit skipped or failed:[/dim]", escape(str(e)))
+                ai_stats = {'packets_analyzed': 0, 'arp_threats': [], 'evil_twin_threats': []}
+                
+            report_path = generate_report(networks, mac_audit, evil_twin_audit, deauth_audit, arp_audit, ai_stats=ai_stats)
             console.print(f"\n  [bold green]✅ Report saved:[/bold green] {report_path}")
             open_report(report_path)
 
         elif choice == "4":
+            console.print("  [cyan]Launching AI Cyber Defense Dashboard...[/cyan]")
+            try:
+                from ai_models.live_dashboard import run_dashboard
+                run_dashboard()
+            except ImportError as e:
+                console.print("  [bold red]Error launching AI Dashboard:[/bold red]", escape(str(e)))
+            except Exception as e:
+                console.print("  [bold red]Dashboard Error:[/bold red]", escape(str(e)))
+
+        elif choice == "5":
             console.print("\n  [dim]Goodbye. Stay secure.[/dim]\n")
             sys.exit(0)
 

@@ -1,0 +1,178 @@
+WifiShield AI - Full Packet Inference Log
+==========================================
+[22:26:57] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 0.1% | SAFE
+[22:26:57] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 100.0% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 100.0% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:58] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:26:59] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:00] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:01] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:01] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:01] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:01] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:01] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:23] LSTM (ARP) | MAC: cc:15:31:e2:0d:d3 | Conf: 99.9% | ATTACK DETECTED
+[22:27:23] LSTM (ARP) | MAC: 70:35:09:52:13:71 | Conf: 99.9% | ATTACK DETECTED
+[22:27:23] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.7% | ATTACK DETECTED
+[22:27:23] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 40.9% | SAFE
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 0.1% | SAFE
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 100.0% | ATTACK DETECTED
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 100.0% | ATTACK DETECTED
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:24] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:25] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:25] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:25] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:25] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:25] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:25] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:25] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:25] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:25] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:25] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:26] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:26] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:26] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:26] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:26] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:26] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:26] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:26] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:26] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:26] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:26] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:27] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:27] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:27] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:27] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:27] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:27] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:27] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:27] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:27] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:27] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:28] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:28] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:28] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:27:28] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:28:07] LSTM (ARP) | MAC: cc:15:31:e2:0d:d3 | Conf: 99.9% | ATTACK DETECTED
+[22:28:07] LSTM (ARP) | MAC: 70:35:09:52:13:71 | Conf: 99.9% | ATTACK DETECTED
+[22:28:07] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:07] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:07] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:07] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:08] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:10] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 99.9% | ROGUE AP DETECTED
+[22:28:10] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:10] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:10] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:11] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:42] LSTM (ARP) | MAC: cc:15:31:e2:0d:d3 | Conf: 98.7% | ATTACK DETECTED
+[22:28:42] LSTM (ARP) | MAC: 70:35:09:52:13:71 | Conf: 0.1% | SAFE
+[22:28:42] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 99.9% | ROGUE AP DETECTED
+[22:28:42] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:42] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:42] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:43] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:45] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 99.9% | ROGUE AP DETECTED
+[22:28:45] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:45] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:45] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:28:46] DNN (Evil Twin) | SSID: Simulated_ | BSSID: aa:bb:cc:dd:ee:11 | Conf: 0.0% | SAFE
+[22:29:28] LSTM (ARP) | MAC: cc:15:31:e2:0d:d3 | Conf: 0.0% | SAFE
+[22:29:28] LSTM (ARP) | MAC: 70:35:09:52:13:71 | Conf: 99.9% | ATTACK DETECTED
+[22:29:28] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 0.0% | SAFE
+[22:29:28] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:28] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 0.1% | SAFE
+[22:29:28] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 100.0% | ATTACK DETECTED
+[22:29:28] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 100.0% | ATTACK DETECTED
+[22:29:28] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:28] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:29] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:29] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:29] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:29] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:29] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:29] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:29] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:29] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:29] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:30] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:30] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:30] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:30] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:30] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:30] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:30] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:30] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:30] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:31] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.8% | ATTACK DETECTED
+[22:29:31] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.8% | ATTACK DETECTED
+[22:29:31] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:31] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:31] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:31] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:31] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:31] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:31] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.8% | ATTACK DETECTED
+[22:29:31] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:32] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:32] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:32] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:32] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:32] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:32] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:32] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:32] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:32] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:33] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:33] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:33] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:33] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED
+[22:29:33] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.8% | ATTACK DETECTED
+[22:29:33] LSTM (ARP) | MAC: aa:bb:cc:dd:ee:ff | Conf: 99.9% | ATTACK DETECTED

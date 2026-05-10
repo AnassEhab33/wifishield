@@ -510,6 +510,7 @@
 
     <div class="nav-menu">
       <a href="#alerts" class="nav-item">Active Alerts</a>
+      <a href="#ai-analysis" class="nav-item">🤖 AI Deep Learning</a>
       <a href="#ap-scan" class="nav-item">Access Points</a>
       <a href="#mac-audit" class="nav-item">Device Audit</a>
     </div>
@@ -557,8 +558,66 @@
         <div class="kpi-label">Critical Networks</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-value" style="color: var(--accent-safe);">{{ counts.safe }}</div>
-        <div class="kpi-label">Secure Networks</div>
+        <div class="kpi-value" style="color: var(--accent-safe);">{{ ai_stats.packets_analyzed }}</div>
+        <div class="kpi-label">Packets AI Scanned</div>
+      </div>
+    </div>
+
+    <!-- AI DEEP LEARNING SECTION -->
+    <div id="ai-analysis" style="margin-top: 32px;">
+      <h2 class="section-header">🤖 AI Deep Learning Analysis</h2>
+      
+      <div class="ap-grid">
+        <div class="ap-card" style="border-color: var(--accent-brand); box-shadow: 0 4px 20px rgba(56, 189, 248, 0.1);">
+          <div style="width: 100%;">
+            <div class="ap-header">
+              <h3 class="ap-ssid" style="color: var(--accent-brand);">Neural Network Inference Results</h3>
+            </div>
+            
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 13px;">
+              The deep learning engine ran a short live traffic capture during this audit, processing <strong>{{ ai_stats.packets_analyzed }}</strong> background packets using the trained LSTM (ARP) and DNN (Beacon) models.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+              <!-- ARP Threats -->
+              <div style="background: rgba(0,0,0,0.15); border-radius: 8px; padding: 16px;">
+                <h4 style="font-family: var(--f-mono); color: var(--text-main); margin-bottom: 12px; font-size: 13px; text-transform: uppercase;">LSTM / ARP Anomalies</h4>
+                {% if ai_stats.arp_threats %}
+                  {% for threat in ai_stats.arp_threats %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: rgba(248, 113, 113, 0.1); border-left: 2px solid var(--accent-crit); margin-bottom: 8px; border-radius: 4px;">
+                      <span style="font-family: var(--f-mono); font-size: 12px; color: var(--text-main);">MAC: {{ threat.mac }}</span>
+                      <span class="tag tag-crit">{{ threat.confidence }}% CONFIDENCE</span>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <div style="display: flex; align-items: center; gap: 8px; color: var(--accent-safe); font-size: 13px;">
+                    <span>✓</span> No sequential ARP anomalies detected in capture.
+                  </div>
+                {% endif %}
+              </div>
+
+              <!-- Evil Twin Threats -->
+              <div style="background: rgba(0,0,0,0.15); border-radius: 8px; padding: 16px;">
+                <h4 style="font-family: var(--f-mono); color: var(--text-main); margin-bottom: 12px; font-size: 13px; text-transform: uppercase;">DNN / Rogue AP Anomalies</h4>
+                {% if ai_stats.evil_twin_threats %}
+                  {% for threat in ai_stats.evil_twin_threats %}
+                    <div style="display: flex; flex-direction: column; gap: 4px; padding: 8px; background: rgba(251, 146, 60, 0.1); border-left: 2px solid var(--accent-high); margin-bottom: 8px; border-radius: 4px;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-family: var(--f-heading); font-size: 14px; color: var(--text-main);">{{ threat.ssid }}</span>
+                        <span class="tag tag-warn">{{ threat.confidence }}% CONFIDENCE</span>
+                      </div>
+                      <span style="font-family: var(--f-mono); font-size: 11px; color: var(--text-muted);">BSSID: {{ threat.bssid }}</span>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <div style="display: flex; align-items: center; gap: 8px; color: var(--accent-safe); font-size: 13px;">
+                    <span>✓</span> No anomalous 802.11 management frames detected.
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

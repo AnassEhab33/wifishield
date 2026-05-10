@@ -13,7 +13,8 @@ def generate_report(networks: list, mac_audit: dict,
                     evil_twin_audit: dict = None,
                     deauth_audit: dict = None,
                     arp_audit: dict = None,
-                    output_dir: str = None) -> str:
+                    output_dir: str = None,
+                    ai_stats: dict = None) -> str:
     """
     Generate HTML security report.
     Returns path to the generated HTML file.
@@ -53,12 +54,16 @@ def generate_report(networks: list, mac_audit: dict,
     if arp_audit is None:
         arp_audit = {'attack_detected': False, 'risk': 'SAFE', 'details': ''}
 
+    if ai_stats is None:
+        ai_stats = {'packets_analyzed': 0, 'arp_threats': [], 'evil_twin_threats': []}
+
     html_content = template.render(
         networks=networks,
         mac_audit=mac_audit,
         evil_twin_audit=evil_twin_audit,
         deauth_audit=deauth_audit,
         arp_audit=arp_audit,
+        ai_stats=ai_stats,
         scan_time=scan_time,
         total_aps=len(networks),
         counts=counts
